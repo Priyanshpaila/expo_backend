@@ -26,13 +26,6 @@ function resolveBrochureForLead(lead) {
     };
   }
 
-  // Optional: global "all brochures" fallback
-  if (env.BROCHURES_URL) {
-    return {
-      href: env.BROCHURES_URL,
-      label: "Our product brochures",
-    };
-  }
 
   return null;
 }
@@ -57,7 +50,7 @@ function getTransporter() {
 }
 
 /** ---- Email HTML (brand styled, responsive, no-reply notice) ---- */
-function leadEmailHtml({ lead, headerImage, ctaUrl }) {
+function leadEmailHtml({ lead, headerImage, ctaUrl, brochure }) {
   const safe = (v) => (v ?? "").toString();
 
   // Text from your screenshot/template
