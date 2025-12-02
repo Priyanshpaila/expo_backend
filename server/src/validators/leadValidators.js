@@ -3,12 +3,14 @@ import { body } from "express-validator";
 export const createLeadRules = [
   body("division")
     .isString()
-    .trim(),
-  body("product").isString().trim().notEmpty(),
-  body("productCategory").isString().trim().notEmpty(),
+    .trim()
+    .optional(),
+  body("product").isString().trim(),
+  body("productCategory").isString().trim(),
   body("customerName")
     .isString()
-    .trim(),
+    .trim()
+    .optional(),
   body("customerPhone")
     .isString()
     .trim()
@@ -17,10 +19,12 @@ export const createLeadRules = [
   body("email").isEmail().withMessage("Valid email required"),
   body("location")
     .isString()
-    .trim(),
+    .trim()
+    .optional(),
   body("productDescription")
     .isString()
-    .trim(),
+    .trim()
+    .optional(),
   body("remark1").optional().isString().trim(),
   body("remark2").optional().isString().trim(),
 ];
