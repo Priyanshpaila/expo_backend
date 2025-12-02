@@ -14,7 +14,7 @@ ENV WHATSAPP_PHONE_NUMBER_ID=699536063241390
 ENV WHATSAPP_ACCESS_TOKEN=EAAXJFQtLEDQBOZBHrYSdXpr9nfLRkQSG6lkQlYROT6P5uCGIATm3oAC6M7jlJTDEyKZCQZBapSLhL1j1nbzhYZAbwrL39QuxooyRmEJWHe9IG8WqnsTasuUELdyCPi4MmlEFM1oyNHhhpz5ZCCvMxd8XUxMuzhBqkGCNmNT6wlz2dYIvoCHWIjxFGR2THgYzjvePeVfnbM2BFeSqb
 ENV WHATSAPP_TEMPLATE_NAME=expo_rr
 ENV WHATSAPP_TEMPLATE_LANG=en_US
-ENV WHATSAPP_HEADER_IMAGE=https://i.postimg.cc/90J3tYDM/logourl.png
+ENV WHATSAPP_HEADER_IMAGE=https://i.postimg.cc/bJctsBJw/hira-rrispat-logo.png
 
 
 # SMTP
@@ -26,7 +26,7 @@ ENV SMTP_PASS=wdgytalyzhkovlkz
 ENV SMTP_FROM="RR Ispat Team <techsupport@rrispat.com>"
 
 ENV APP_PUBLIC_URL=https://www.rrispat.com
-ENV WHATSAPP_HEADER_IMAGE=https://i.postimg.cc/90J3tYDM/logourl.png
+ENV WHATSAPP_HEADER_IMAGE=https://i.postimg.cc/bJctsBJw/hira-rrispat-logo.png
 
 # Set working directory
 WORKDIR /app

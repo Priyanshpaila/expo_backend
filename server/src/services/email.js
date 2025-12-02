@@ -143,6 +143,8 @@ function leadEmailHtml({ lead, headerImage, ctaUrl }) {
           <div class="meta-row"><div class="meta-label">Location</div><div>${safe(lead.location)}</div></div>
         </div>
 
+        ${brochureBlock}
+        
         ${ctaUrl ? `<a href="${ctaUrl}" target="_blank" rel="noopener" class="cta">Visit website</a>` : ""}
 
         <p class="muted" style="margin-top:16px;">
@@ -168,12 +170,13 @@ export async function sendLeadEmail({ to, lead }) {
     const headerImage = env.WA?.HEADER_IMAGE || "";
     const ctaUrl = env.APP_PUBLIC_URL || "";
 
+    const brochure = resolveBrochureForLead(lead);
     const info = await t.sendMail({
       from: env.SMTP.FROM || env.SMTP.USER, // e.g., "RR Ispat (No Reply) <noreply@...>"
       to,
       // No Reply-To on purpose (no-reply flow). If you want replies, set replyTo here.
       subject: "Thank you for your submission — RR Ispat",
-      html: leadEmailHtml({ lead, headerImage, ctaUrl }),
+      html: leadEmailHtml({ lead, headerImage, ctaUrl, brochure }),
     });
 
     return { ok: true, messageId: info.messageId };
