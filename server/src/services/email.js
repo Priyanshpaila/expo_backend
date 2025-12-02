@@ -2,6 +2,44 @@
 import nodemailer from "nodemailer";
 import { env } from "../config/env.js";
 
+
+const BROCHURE_LINKS_BY_DIVISION = {
+  "Hira Company Brochure": "https://drive.google.com/file/d/1ohizn_zm0zRumz_ZrmseP3F0S3LNDEb3/view?usp=drive_link",
+  "HIRA Solar Brochure": "https://drive.google.com/file/d/1OLC3zz_tzthbrMPdfG4eiWlILAFqaeoC/view?usp=drive_link",
+  "HIRA Poles Brochure": "https://drive.google.com/file/d/14T6upVKamDxjfIoliIKqiHXOXvkv-ARt/view?usp=drive_link",
+  "HIRA Crash Barrier Brochure": "https://drive.google.com/file/d/10UVEjns0LysUNonpQ3pmlFlRfEAlHDBZ/view?usp=drive_link",
+  "HIRA Pipes Brochure": "https://drive.google.com/file/d/15R5NxGAm_HDdLxcppVAzr72p7TT2a-i7/view?usp=drive_link",
+  "HIRA STRUCTURE Brochure": "https://drive.google.com/file/d/1PpfNhuwO0P0QzewpHx09GQGX_hijzw-L/view?usp=drive_link",
+
+};
+
+/**
+ * Given a lead, try to find a matching brochure based on division.
+ * Returns { href, label } or null.
+ */
+function resolveBrochureForLead(lead) {
+  const division = (lead?.division || "").trim();
+  if (division && BROCHURE_LINKS_BY_DIVISION[division]) {
+    return {
+      href: BROCHURE_LINKS_BY_DIVISION[division],
+      label: `${division} brochure`,
+    };
+  }
+
+  // Optional: global "all brochures" fallback
+  if (env.BROCHURES_URL) {
+    return {
+      href: env.BROCHURES_URL,
+      label: "Our product brochures",
+    };
+  }
+
+  return null;
+}
+
+
+
+
 /** Create & reuse the transporter */
 let transporter;
 function getTransporter() {
@@ -33,6 +71,23 @@ function leadEmailHtml({ lead, headerImage, ctaUrl }) {
   // Simple preheader for better inbox preview
   const preheader =
     "Thank you for sharing your details with RR Ispat. We’ll contact you shortly.";
+
+
+  const brochureBlock = brochure
+    ? `
+      <div class="meta" style="margin-top:16px;">
+        <div class="meta-row">
+          <div class="meta-label">Brochure</div>
+          <div>
+            <a href="${brochure.href}" target="_blank" rel="noopener"
+               style="color:#0ea5e9; text-decoration:none; font-weight:600;">
+              Download ${brochure.label}
+            </a>
+          </div>
+        </div>
+      </div>
+    `
+    : "";
 
   return `<!doctype html>
 <html>
