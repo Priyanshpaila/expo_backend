@@ -46,10 +46,10 @@ EXPOSE ${PORT}
 CMD ["node", "src/index.js"]
 
 
-# docker build  --no-cache -t 192.168.13.72:5000/expobe_31oct2025 .      
-# docker run -d --name expobe_31oct2025 -p 82:82 expobe_31oct2025_image
+# docker build  --no-cache -t 192.168.13.72:5000/expobe_3dec2025 .      
+# docker run -d --name expobe_3dec2025 -p 82:82 expobe_3dec2025_image
 
-# docker tag expobe_31oct2025_image 192.168.13.72:5000/expobe_31oct2025
-# docker push 192.168.13.72:5000/expobe_31oct2025
-# docker pull 192.168.13.72:5000/expobe_31oct2025
-# docker run -d --name expobe_31oct2025 -p 82:82 192.168.13.72:5000/expobe_31oct2025
+# docker tag expobe_3dec2025_image 192.168.13.72:5000/expobe_3dec2025
+# docker push 192.168.13.72:5000/expobe_3dec2025
+# docker pull 192.168.13.72:5000/expobe_3dec2025
+# docker run -d --name expobe_3dec2025 -p 82:82 192.168.13.72:5000/expobe_3dec2025
