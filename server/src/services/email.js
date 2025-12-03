@@ -2,36 +2,28 @@
 import nodemailer from "nodemailer";
 import { env } from "../config/env.js";
 
-
 const BROCHURE_LINKS_BY_DIVISION = {
-  "Hira Company Brochure": "https://drive.google.com/file/d/1ohizn_zm0zRumz_ZrmseP3F0S3LNDEb3/view?usp=drive_link",
-  "HIRA Solar Brochure": "https://drive.google.com/file/d/1OLC3zz_tzthbrMPdfG4eiWlILAFqaeoC/view?usp=drive_link",
-  "HIRA Poles Brochure": "https://drive.google.com/file/d/14T6upVKamDxjfIoliIKqiHXOXvkv-ARt/view?usp=drive_link",
-  "HIRA Crash Barrier Brochure": "https://drive.google.com/file/d/10UVEjns0LysUNonpQ3pmlFlRfEAlHDBZ/view?usp=drive_link",
-  "HIRA Pipes Brochure": "https://drive.google.com/file/d/15R5NxGAm_HDdLxcppVAzr72p7TT2a-i7/view?usp=drive_link",
-  "HIRA STRUCTURE Brochure": "https://drive.google.com/file/d/1PpfNhuwO0P0QzewpHx09GQGX_hijzw-L/view?usp=drive_link",
-
+  "Hira Company Brochure":
+    "https://drive.google.com/file/d/1ohizn_zm0zRumz_ZrmseP3F0S3LNDEb3/view?usp=drive_link",
+  "HIRA Solar Brochure":
+    "https://drive.google.com/file/d/1OLC3zz_tzthbrMPdfG4eiWlILAFqaeoC/view?usp=drive_link",
+  "HIRA Poles Brochure":
+    "https://drive.google.com/file/d/14T6upVKamDxjfIoliIKqiHXOXvkv-ARt/view?usp=drive_link",
+  "HIRA Crash Barrier Brochure":
+    "https://drive.google.com/file/d/10UVEjns0LysUNonpQ3pmlFlRfEAlHDBZ/view?usp=drive_link",
+  "HIRA Pipes Brochure":
+    "https://drive.google.com/file/d/15R5NxGAm_HDdLxcppVAzr72p7TT2a-i7/view?usp=drive_link",
+  "HIRA STRUCTURE Brochure":
+    "https://drive.google.com/file/d/1PpfNhuwO0P0QzewpHx09GQGX_hijzw-L/view?usp=drive_link",
 };
 
-/**
- * Given a lead, try to find a matching brochure based on division.
- * Returns { href, label } or null.
- */
-function resolveBrochureForLead(lead) {
-  const division = (lead?.division || "").trim();
-  if (division && BROCHURE_LINKS_BY_DIVISION[division]) {
-    return {
-      href: BROCHURE_LINKS_BY_DIVISION[division],
-      label: `${division} brochure`,
-    };
-  }
-
-
-  return null;
+// Turn the map into an array of { label, href }
+function getAllBrochures() {
+  return Object.entries(BROCHURE_LINKS_BY_DIVISION).map(([label, href]) => ({
+    label,
+    href,
+  }));
 }
-
-
-
 
 /** Create & reuse the transporter */
 let transporter;
@@ -50,7 +42,7 @@ function getTransporter() {
 }
 
 /** ---- Email HTML (brand styled, responsive, no-reply notice) ---- */
-function leadEmailHtml({ lead, headerImage, ctaUrl, brochure }) {
+function leadEmailHtml({ lead, headerImage, ctaUrl, brochures }) {
   const safe = (v) => (v ?? "").toString();
 
   // Text from your screenshot/template
@@ -65,22 +57,30 @@ function leadEmailHtml({ lead, headerImage, ctaUrl, brochure }) {
   const preheader =
     "Thank you for sharing your details with RR Ispat. We’ll contact you shortly.";
 
-
-  const brochureBlock = brochure
-    ? `
+  const brochureBlock =
+    brochures && brochures.length
+      ? `
       <div class="meta" style="margin-top:16px;">
         <div class="meta-row">
-          <div class="meta-label">Brochure</div>
+          <div class="meta-label">Brochures</div>
           <div>
-            <a href="${brochure.href}" target="_blank" rel="noopener"
-               style="color:#0ea5e9; text-decoration:none; font-weight:600;">
-              Download ${brochure.label}
-            </a>
+            ${brochures
+              .map(
+                (b) => `
+              <div style="margin-bottom:4px;">
+                <a href="${b.href}" target="_blank" rel="noopener"
+                   style="color:#0ea5e9; text-decoration:none; font-weight:600;">
+                  ${b.label}
+                </a>
+              </div>
+            `
+              )
+              .join("")}
           </div>
         </div>
       </div>
     `
-    : "";
+      : "";
 
   return `<!doctype html>
 <html>
@@ -131,8 +131,8 @@ function leadEmailHtml({ lead, headerImage, ctaUrl, brochure }) {
           <div class="meta-row"><div class="meta-label">Name</div><div>${safe(lead.customerName)}</div></div>
           <div class="meta-row"><div class="meta-label">Phone</div><div>${safe(lead.customerPhone)}</div></div>
           <div class="meta-row"><div class="meta-label">Email</div><div>${safe(lead.email)}</div></div>
-          <div class="meta-row"><div class="meta-label">Division</div><div>${safe(lead.division)}</div></div>
-          <div class="meta-row"><div class="meta-label">Product</div><div>${safe(lead.productCategory)} › ${safe(lead.product)}</div></div>
+          <div class="meta-row"><div class="meta-label">Area of Interest</div><div>${safe(lead.remark1)}</div></div>
+          <div class="meta-row"><div class="meta-label">Company Name</div><div>${safe(lead.remark2)}</div></div>
           <div class="meta-row"><div class="meta-label">Location</div><div>${safe(lead.location)}</div></div>
         </div>
 
@@ -163,18 +163,23 @@ export async function sendLeadEmail({ to, lead }) {
     const headerImage = env.WA?.HEADER_IMAGE || "";
     const ctaUrl = env.APP_PUBLIC_URL || "";
 
-    const brochure = resolveBrochureForLead(lead);
+    const brochures = getAllBrochures();
     const info = await t.sendMail({
       from: env.SMTP.FROM || env.SMTP.USER, // e.g., "RR Ispat (No Reply) <noreply@...>"
       to,
-      // No Reply-To on purpose (no-reply flow). If you want replies, set replyTo here.
       subject: "Thank you for your submission — RR Ispat",
-      html: leadEmailHtml({ lead, headerImage, ctaUrl, brochure }),
+      html: leadEmailHtml({ lead, headerImage, ctaUrl, brochures }),
     });
 
     return { ok: true, messageId: info.messageId };
   } catch (error) {
-    console.error("EMAIL SEND ERROR:", error?.response || error?.message || error);
-    return { ok: false, error: error?.response || error?.message || error };
+    console.error(
+      "EMAIL SEND ERROR:",
+      error?.response || error?.message || error
+    );
+    return {
+      ok: false,
+      error: error?.response || error?.message || error,
+    };
   }
 }
