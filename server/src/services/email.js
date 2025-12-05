@@ -131,8 +131,8 @@ function leadEmailHtml({ lead, headerImage, ctaUrl, brochures }) {
           <div class="meta-row"><div class="meta-label">Name</div><div>${safe(lead.customerName)}</div></div>
           <div class="meta-row"><div class="meta-label">Phone</div><div>${safe(lead.customerPhone)}</div></div>
           <div class="meta-row"><div class="meta-label">Email</div><div>${safe(lead.email)}</div></div>
-          <div class="meta-row"><div class="meta-label">Area of Interest</div><div>${safe(lead.remark1)}</div></div>
-          <div class="meta-row"><div class="meta-label">Company Name</div><div>${safe(lead.remark2)}</div></div>
+          <div class="meta-row"><div class="meta-label">Area of Interest</div><div>${safe(lead.areaofInterest)}</div></div>
+          <div class="meta-row"><div class="meta-label">Firm Name</div><div>${safe(lead.firmName)}</div></div>
           <div class="meta-row"><div class="meta-label">Location</div><div>${safe(lead.location)}</div></div>
         </div>
 
